@@ -3,7 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@include file="/WEB-INF/html/menu.jsp" %>
 <div class="container">
-    ${status}
+    <c:if test="${!empty sessionScope.status}">
+        <div style="color:red; border:1px solid red; padding:8px; margin-bottom:10px;">
+            <strong>Chyba:</strong> ${sessionScope.status}
+        </div>
+        <c:remove var="status" scope="session"/>
+    </c:if>
     <c:choose>
         <c:when test="${!empty sessionScope.attributes}">
             <p>
