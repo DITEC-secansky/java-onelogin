@@ -82,8 +82,8 @@ definovaný v [keycloak/realm-export.json](keycloak/realm-export.json) a importu
 | Účel | URL | Prihlasovacie údaje |
 |---|---|---|
 | Demo aplikácia (prihlásenie cez SAML) | https://127.0.0.1:3001/login | `testuser` / `test123` |
-| Admin konzola Keycloaku (master realm) | http://localhost:8081/ | `admin` / `admin` |
-| SAML metadáta IdP (Keycloak) | http://localhost:8081/realms/webssodemo/protocol/saml/descriptor | – |
+| Admin konzola Keycloaku (master realm) | http://kistest:8081/ | `admin` / `admin` |
+| SAML metadáta IdP (Keycloak) | http://kistest:8081/realms/webssodemo/protocol/saml/descriptor | – |
 | SAML metadáta SP | https://127.0.0.1:3001/sp-metadata.xml | – |
 
 > Pozn.: `admin/admin` je len pre **administráciu Keycloaku**, do demo aplikácie sa prihlasuje
