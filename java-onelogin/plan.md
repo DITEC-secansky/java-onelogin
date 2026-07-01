@@ -49,10 +49,10 @@ Pridať službu `keycloak` do `docker-compose.yml` (alebo spustiť samostatne):
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
     ports:
-      - 8080:8080
+      - 8081:8080
 ```
 
-- Admin konzola: `http://localhost:8080/` (admin / admin).
+- Admin konzola: `http://localhost:8081/` (admin / admin).
 - Pre lokálny vývoj stačí HTTP. Pre HTTPS treba doplniť `KC_HTTPS_*` a certifikáty.
 
 > Pozor na dostupnosť hostname medzi kontajnerom Tomcatu a Keycloakom.
@@ -88,7 +88,7 @@ Tým je celé prostredie reprodukovateľné a verzionované v gite.
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-webssodemo.json
     ports:
-      - 8080:8080
+      - 8081:8080
 ```
 
 - `--import-realm` pri štarte naimportuje všetky realmy z `/opt/keycloak/data/import/`.
@@ -119,7 +119,7 @@ ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev", "--import-realm"]
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
     ports:
-      - 8080:8080
+      - 8081:8080
 ```
 
 > **Čo musí byť v `realm-export.json`:** realm `webssodemo`, SAML klient s `clientId =
@@ -205,17 +205,17 @@ prípadne e-mail/meno pre atribúty.
 Keycloak SAML IdP descriptor (metadáta) sú na:
 
 ```
-http://localhost:8080/realms/webssodemo/protocol/saml/descriptor
+http://localhost:8081/realms/webssodemo/protocol/saml/descriptor
 ```
 
 Z neho (alebo z realm Keys) získať hodnoty pre SP konfiguráciu:
 
 | Properties kľúč | Hodnota z Keycloaku |
 |---|---|
-| `idp.entityid` | `http://localhost:8080/realms/webssodemo` |
-| `idp.single_sign_on_service.url` | `http://localhost:8080/realms/webssodemo/protocol/saml` |
-| `idp.single_logout_service.url` | `http://localhost:8080/realms/webssodemo/protocol/saml` |
-| `idp.single_logout_service.response.url` | `http://localhost:8080/realms/webssodemo/protocol/saml` |
+| `idp.entityid` | `http://localhost:8081/realms/webssodemo` |
+| `idp.single_sign_on_service.url` | `http://localhost:8081/realms/webssodemo/protocol/saml` |
+| `idp.single_logout_service.url` | `http://localhost:8081/realms/webssodemo/protocol/saml` |
+| `idp.single_logout_service.response.url` | `http://localhost:8081/realms/webssodemo/protocol/saml` |
 | `idp.x509cert` | RSA signing certifikát realm-u (z descriptor XML, element `<ds:X509Certificate>`, alebo Realm settings → Keys → RS256 → Certificate) |
 
 > Pri produkčnom/HTTPS Keycloaku použiť `https://<host>/realms/webssodemo/...`.
@@ -240,11 +240,11 @@ ako kópiu `two_keys_setup.webssodemo.saml.properties` a upraviť **iba** sekciu
 
 ```ini
 # --- IdP = Keycloak ---
-onelogin.saml2.idp.entityid=http://localhost:8080/realms/webssodemo
-onelogin.saml2.idp.single_sign_on_service.url=http://localhost:8080/realms/webssodemo/protocol/saml
+onelogin.saml2.idp.entityid=http://localhost:8081/realms/webssodemo
+onelogin.saml2.idp.single_sign_on_service.url=http://localhost:8081/realms/webssodemo/protocol/saml
 onelogin.saml2.idp.single_sign_on_service.binding=urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-onelogin.saml2.idp.single_logout_service.url=http://localhost:8080/realms/webssodemo/protocol/saml
-onelogin.saml2.idp.single_logout_service.response.url=http://localhost:8080/realms/webssodemo/protocol/saml
+onelogin.saml2.idp.single_logout_service.url=http://localhost:8081/realms/webssodemo/protocol/saml
+onelogin.saml2.idp.single_logout_service.response.url=http://localhost:8081/realms/webssodemo/protocol/saml
 onelogin.saml2.idp.single_logout_service.binding=urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
 onelogin.saml2.idp.x509cert=<RS256 signing certifikát realm-u, Base64 bez hlavičiek>
 ```
