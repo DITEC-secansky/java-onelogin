@@ -20,9 +20,9 @@ hodnoty `onelogin.saml2.idp.*` v properties súbore a zaregistrovanie SP v Keycl
   - login: `/login`, logout: `/logout`
 - Konfigurácia sa načítava cez `Settings.java` zo súboru
   `conf/two_keys_setup.webssodemo.saml.properties` (mimo classpath, načítava sa pri každom requeste).
-- SP entityID: `https://127.0.0.1.slovensko.sk.login`
+- SP entityID: `https://kistest.slovensko.sk.login`
 - **Tomcat počúva iba cez HTTPS na porte 3001** (`server.xml`: `scheme="https" secure="true"`,
-  keystore `localhost-rsa.jks`). Všetky SP URL teda musia byť `https://127.0.0.1:3001/...`.
+  keystore `localhost-rsa.jks`). Všetky SP URL teda musia byť `https://kistest:3001/...`.
 - `ProtectedFilter` chráni `/protected/*`: ak v session nie je `nameId`, spustí
   `auth.login(requestURI)` – t.j. **deep-link** sa nesie cez **RelayState** a SP sa naň po
   prihlásení vráti (logika v `SamlServlet`).
@@ -151,11 +151,11 @@ V realme `webssodemo` vytvoriť klienta typu **SAML**:
 | Nastavenie | Hodnota |
 |---|---|
 | Client type | SAML |
-| **Client ID** | `https://127.0.0.1.slovensko.sk.login` (= `sp.entityid`) |
+| **Client ID** | `https://kistest.slovensko.sk.login` (= `sp.entityid`) |
 | Name | webssodemo |
-| **Valid redirect URIs** | `https://127.0.0.1:3001/*` |
-| **Master SAML Processing URL** (ACS) | `https://127.0.0.1:3001/auth/saml/callback` |
-| Logout Service POST/Redirect Binding URL | `https://127.0.0.1:3001/auth/saml/logout` |
+| **Valid redirect URIs** | `https://kistest:3001/*` (a `https://127.0.0.1:3001/*`) |
+| **Master SAML Processing URL** (ACS) | `https://kistest:3001/auth/saml/callback` |
+| Logout Service POST/Redirect Binding URL | `https://kistest:3001/auth/saml/logout` |
 | Name ID format | `unspecified` (musí sedieť s `sp.nameidformat`) |
 
 Najjednoduchšia alternatíva: v Keycloaku použiť **Import client** a nahrať `sp-metadata.xml`

@@ -26,15 +26,16 @@
   },
   "clients": [
     {
-      "clientId": "https://127.0.0.1.slovensko.sk.login",
+      "clientId": "https://kistest.slovensko.sk.login",
       "name": "webssodemo SP",
       "enabled": true,
       "protocol": "saml",
       "fullScopeAllowed": true,
       "frontchannelLogout": true,
-      "baseUrl": "https://127.0.0.1:3001/",
-      "adminUrl": "https://127.0.0.1:3001/auth/saml/callback",
+      "baseUrl": "https://kistest:3001/",
+      "adminUrl": "https://kistest:3001/auth/saml/callback",
       "redirectUris": [
+        "https://kistest:3001/*",
         "https://127.0.0.1:3001/*"
       ],
       "attributes": {
@@ -49,8 +50,8 @@
         "saml_force_name_id_format": "true",
         "saml_name_id_format": "unspecified",
         "saml.signature.algorithm": "RSA_SHA256",
-        "saml_assertion_consumer_url_post": "https://127.0.0.1:3001/auth/saml/callback",
-        "saml_single_logout_service_url_redirect": "https://127.0.0.1:3001/auth/saml/logout",
+        "saml_assertion_consumer_url_post": "https://kistest:3001/auth/saml/callback",
+        "saml_single_logout_service_url_redirect": "https://kistest:3001/auth/saml/logout",
         "saml.signing.certificate": "MIIC0TCCAbmgAwIBAgIIVKupw2OJCAIwDQYJKoZIhvcNAQENBQAwFzEVMBMGA1UEAxMMaWNvLTgzMTMwMDY2MB4XDTI0MTEyNjE1MTQwMloXDTI2MTEyNjE1MTQwMlowFzEVMBMGA1UEAxMMaWNvLTgzMTMwMDY2MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvZx7K1IBISUb3srbSCbBgKbS4CEDMZczF16YhwcmC6uv+wJpltKYE2JwCwL7gZg5AYKVlLQL6fLnzDPOZ3QYx4XVhAREFFslKlj23e8Po+e9ZKu8NThOXAloARqkUS9ZeqYOmjQXOP28TnRUiB26rYdKKkM5vDhhleI+0IFfA9pQOBEfW0MPe0D58mXPXRoSAw+xCLLoqlNYZvZrphPZI2xOv2eJljfa8RUzaJIGflik+TZIjZYkBikyfnpdop6o3zPKSyTGCnlu61XRj5zDM9bMaJ8pxyuI5wNnmx7jrXYEMEF1zZkukUVKBX224qyjdihrAqbRBsr7prwXjiFSaQIDAQABoyEwHzAdBgNVHQ4EFgQUQWteLduDQzFNwCCmZuWgBwsd+Y4wDQYJKoZIhvcNAQENBQADggEBAI5fQeDdWvMR/h7KAUiAID49Q04EWfKM1VJjQMaaecoAgZzlfeF5Vty1561pixKxKnsa3tob/ac/u7O/DQ5bz/rg7YB+sBsp9DYfSYxYI9/5bEPAT8RZJTgqoWEa76JZRHdDAHJcuHqkMCercb/EuLoO+THL2FXcNoy7tPPzBnb4ZZfDeEsX7NNptFsy9nJFGMvkos0RMFwfCZuaNHTPy6pbiJKxapPnl4kWLFlmStQe85qws55uIS6VUB4JoBlSFI9tItd5qGnbA4HTjMWtu3Zj/XzAYSZ2wOREpJMZLLvDCcrp/+5ymxXXWbonRtUNgF4W0zJMdHioWELLLiYBP/w=",
         "saml.encryption.certificate": "MIIC0TCCAbmgAwIBAgIIShzeZAf5kHEwDQYJKoZIhvcNAQENBQAwFzEVMBMGA1UEAxMMaWNvLTgzMTMwMDY2MB4XDTI0MTEyNjE1MTQwNFoXDTI2MTEyNjE1MTQwNFowFzEVMBMGA1UEAxMMaWNvLTgzMTMwMDY2MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkFwpY/+1GAyGRBP9o8DBAgTInysoB4zTlgd1sB+I+0MUCzH3p1cNG9uMw0H5c7iK/vgCTPrMBlCTt4fD/UApwFSIUDewarafBM8BjHCJx5hEzTTLGKS5S/ouktkjtQDNKBaIqlBILJXaYYh6+NaBefilL5XPeYBo3hx/+ugluQOYFHBMy3sv6IzX8C4F2yJjI+KnenzJXTPulifUxfqbGOeUKy0EWdb8abbQ0+yYV+6KRUPpOhxLEdcvbr6zcBTdYGCY6ioq+9ZIrX6zZdoDbTb3l7j7KLEarvnWQDqBKHZ428eGSPlqNy4VplHT9PTRs0yRVusNK/53lByrkwGqawIDAQABoyEwHzAdBgNVHQ4EFgQUo70p/LVuersKfY2EFwgUvw2UxYEwDQYJKoZIhvcNAQENBQADggEBACBWqnBwzCDTjYmlP8Lr1xHjuSAL5zfD/cqiIMNSAh5JxNdCXUgirl7NpSKgMwwNxZD6jjKuJXIY4KzQf8f5EZpTao++XnKAXW9T7bub2eiXS/mi+1BXA5kjLsLo0p8gXsbPvyO8slRHyDMd01fz7iSpoTixxVFX4wzXmEMR78tR5ocpEicjSf2NlwdyCo9xcGlo70sOQ7h+B13Mv0V75tp3i1IJsG8q2T/Na83R4XKqdwP7jCwfL7oneL1dmtT4QVq97FEwcBz0sHzuVfa68xXbEpbgrXlx74eNmzvJp0fqaV1Gu0+kN2fgcCrMkcF98kckNhMfdJL4oot/Nx0cJRM="
       },

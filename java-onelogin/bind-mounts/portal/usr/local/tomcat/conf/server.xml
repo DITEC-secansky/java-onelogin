@@ -14,9 +14,10 @@
                keystoreFile="conf/localhost-rsa.jks" keystorePass="changeme"
                clientAuth="false" >
     </Connector>
-    <Engine name="Catalina" defaultHost="127.0.0.1">
-      <Host name="127.0.0.1"  appBase="webapps"
+    <Engine name="Catalina" defaultHost="kistest">
+      <Host name="kistest"  appBase="webapps"
             unpackWARs="true" autoDeploy="true">
+        <Alias>127.0.0.1</Alias>
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
