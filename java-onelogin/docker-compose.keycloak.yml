@@ -1,0 +1,14 @@
+name: webssodemo-keycloak
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start-dev --import-realm
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-webssodemo.json
+    ports:
+      - 8081:8080

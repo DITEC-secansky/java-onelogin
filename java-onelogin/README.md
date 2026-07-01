@@ -50,5 +50,41 @@ Pre Identity providera okopírujete hodnoty, čo ste dostali od NASESu v metadá
 * onelogin.saml2.idp.single_logout_service.response.url=https://prihlasenie.upvsfix.gov.sk/oamfed/idp/samlv20
 * onelogin.saml2.idp.x509cert=MIIDXjCCAkagAwIBA................=
 
+## Prihlásenie cez Keycloak (lokálne demo)
 
+Okrem produkčného IdP (UPVS FIX) je možné sa prihlasovať aj voči lokálnemu **Keycloaku**,
+ktorý vystupuje ako SAML 2.0 Identity Provider. Postup a princíp sú podrobne popísané v [plan.md](plan.md).
 
+Aplikácia a Keycloak sú **dva samostatné kontajnery** spúšťané osobitne:
+
+```
+# 1) Keycloak (SAML IdP, realm webssodemo) – samostatný image s auto-importom realmu
+docker compose -f docker-compose.keycloak.yml up -d
+
+# 2) Tomcat s demo aplikáciou (SP)
+docker compose up -d
+```
+
+> Pri zmene Java kódu najprv `mvn clean install` a pred reštartom zmazať rozbalený
+> priečinok `bind-mounts/portal/usr/local/tomcat/webapps/ROOT`, aby Tomcat nasadil novú `ROOT.war`.
+
+Konfigurácia SP pre tento scenár je v
+[keycloak.webssodemo.saml.properties](bind-mounts/portal/usr/local/tomcat/conf/keycloak.webssodemo.saml.properties)
+(sekcia `idp.*` mieri na Keycloak). Ktorý profil sa načíta, sa prepína v
+[Settings.java](src/main/java/com/archimetes/cgpcon/websso/Settings.java).
+
+Keycloak realm (klient, mappery, test používateľ aj **fixný IdP podpisový kľúč/cert**) je
+definovaný v [keycloak/realm-export.json](keycloak/realm-export.json) a importuje sa pri štarte
+(`--import-realm`). Vďaka fixnému RS256 kľúču sa `onelogin.saml2.idp.x509cert` pri reštarte nemení.
+
+### Prístupy
+
+| Účel | URL | Prihlasovacie údaje |
+|---|---|---|
+| Demo aplikácia (prihlásenie cez SAML) | https://127.0.0.1:3001/login | `testuser` / `test123` |
+| Admin konzola Keycloaku (master realm) | http://localhost:8081/ | `admin` / `admin` |
+| SAML metadáta IdP (Keycloak) | http://localhost:8081/realms/webssodemo/protocol/saml/descriptor | – |
+| SAML metadáta SP | https://127.0.0.1:3001/sp-metadata.xml | – |
+
+> Pozn.: `admin/admin` je len pre **administráciu Keycloaku**, do demo aplikácie sa prihlasuje
+> používateľom **`testuser` / `test123`** (existuje v realme `webssodemo`).
