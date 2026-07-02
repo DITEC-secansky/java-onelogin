@@ -1,3 +1,10 @@
+# Samostatný compose pre SERVER režim (kistest).
+# Spustenie:
+#   docker compose -f docker-compose-kistest.yml up -d
+#
+# Je to plná kópia docker-compose.yml; jediný rozdiel oproti localhost verzii je,
+# že mountuje keycloak.webssodemo.saml.kistest.properties (host = kistest) na cestu
+# .../conf/keycloak.webssodemo.saml.properties.
 name: webssodemo
 services:
   portal:
@@ -8,18 +15,10 @@ services:
       - ./bind-mounts/portal/usr/local/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml
       - ./bind-mounts/portal/usr/local/tomcat/conf/webssodemo.saml.properties:/usr/local/tomcat/conf/webssodemo.saml.properties
       - ./bind-mounts/portal/usr/local/tomcat/conf/two_keys_setup.webssodemo.saml.properties:/usr/local/tomcat/conf/two_keys_setup.webssodemo.saml.properties
-      - ./bind-mounts/portal/usr/local/tomcat/conf/keycloak.webssodemo.saml.properties:/usr/local/tomcat/conf/keycloak.webssodemo.saml.properties
+      - ./bind-mounts/portal/usr/local/tomcat/conf/keycloak.webssodemo.saml.kistest.properties:/usr/local/tomcat/conf/keycloak.webssodemo.saml.properties
       - ./bind-mounts/portal/usr/local/tomcat/conf/localhost-rsa.jks:/usr/local/tomcat/conf/localhost-rsa.jks
     ports:
       - 3001:3001
       - 5005:5005
     environment:
-      # Default = localhost (127.0.0.1): base mountuje keycloak.webssodemo.saml.properties.
-      # Spustenie localhost režimu:
-      #   docker compose up -d
-      #   docker compose -f docker-compose.keycloak.yml up -d
-      # Server (kistest) portal má vlastný súbor; Keycloak je zdieľaný (identický pre oba režimy):
-      #   docker compose -f docker-compose-kistest.yml up -d
-      #   docker compose -f docker-compose.keycloak.yml up -d
       - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005
-

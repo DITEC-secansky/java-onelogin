@@ -58,11 +58,11 @@ ktorý vystupuje ako SAML 2.0 Identity Provider. Postup a princíp sú podrobne 
 Aplikácia a Keycloak sú **dva samostatné kontajnery** spúšťané osobitne:
 
 ```
-# 1) Keycloak (SAML IdP, realm webssodemo) – samostatný image s auto-importom realmu
-docker compose -f docker-compose.keycloak.yml up -d
-
-# 2) Tomcat s demo aplikáciou (SP)
+# 1) Tomcat s demo aplikáciou (SP)
 docker compose up -d
+
+# 2) Keycloak (SAML IdP, realm webssodemo) – samostatný image s auto-importom realmu
+docker compose -f docker-compose.keycloak.yml up -d
 ```
 
 > Pri zmene Java kódu najprv `mvn clean install` a pred reštartom zmazať rozbalený

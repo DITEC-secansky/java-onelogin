@@ -20,9 +20,22 @@ hodnoty `onelogin.saml2.idp.*` v properties súbore a zaregistrovanie SP v Keycl
   - login: `/login`, logout: `/logout`
 - Konfigurácia sa načítava cez `Settings.java` zo súboru
   `conf/two_keys_setup.webssodemo.saml.properties` (mimo classpath, načítava sa pri každom requeste).
-- SP entityID: `https://kistest.slovensko.sk.login`
+- SP entityID: per-režim – `https://127.0.0.1.slovensko.sk.login` (localhost) /
+  `https://kistest.slovensko.sk.login` (server)
+- **Prepínanie prostredia (`127.0.0.1` ↔ server)**: zatiaľ **dva režimy** – všetko lokálne
+  alebo všetko na serveri.
+  **Bez env premenných a bez tokenov** – prepína sa výberom **compose súboru**,
+  ktorý namountuje príslušný properties súbor:
+  localhost = `docker compose up -d` (base mountuje `keycloak.webssodemo.saml.properties`),
+  server = `docker compose -f docker-compose-kistest.yml up -d` (mountuje
+  `keycloak.webssodemo.saml.kistest.properties`). Keycloak: zdieľaný `docker-compose.keycloak.yml`
+  (identický pre oba režimy). `Settings.java` len
+  načíta ten súbor, ktorý je namountovaný. `entityid` je per-súbor a vyberá jedného z **dvoch
+  Keycloak klientov** (`...kistest...` / `...127.0.0.1...`) so správnou statickou SLO URL →
+  funkčný **login aj logout**. Hybrid (rôzne hosty SP/IdP) je zatiaľ mimo rozsah.
 - **Tomcat počúva iba cez HTTPS na porte 3001** (`server.xml`: `scheme="https" secure="true"`,
-  keystore `localhost-rsa.jks`). Všetky SP URL teda musia byť `https://kistest:3001/...`.
+  keystore `localhost-rsa.jks`). SP URL sú `https://127.0.0.1:3001/...` (localhost) alebo
+  `https://kistest:3001/...` (server).
 - `ProtectedFilter` chráni `/protected/*`: ak v session nie je `nameId`, spustí
   `auth.login(requestURI)` – t.j. **deep-link** sa nesie cez **RelayState** a SP sa naň po
   prihlásení vráti (logika v `SamlServlet`).
