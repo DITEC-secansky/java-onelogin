@@ -65,6 +65,23 @@ docker compose up -d
 docker compose -f docker-compose.keycloak.yml up -d
 ```
 
+### Režimy spustenia (localhost / server / hybrid)
+
+Prostredie sa neprepína env premennými, ale **výberom compose súboru**, ktorý namountuje
+príslušný SP properties profil na `.../conf/keycloak.webssodemo.saml.properties`:
+
+| Režim | SP (appka) | IdP (Keycloak) | Spustenie SP |
+|---|---|---|---|
+| **localhost** | `https://127.0.0.1:3001` | `http://127.0.0.1:8081` | `docker compose up -d` |
+| **server (kistest)** | `https://kistest:3001` | `http://kistest:8081` | `docker compose -f docker-compose.demo-kistest.yml up -d` |
+| **hybrid** | `https://127.0.0.1:3001` (lokálne) | `http://kistest:8081` (na serveri) | `docker compose -f docker-compose.demo-kistest.hybrid.yml up -d` |
+
+**Hybridný režim** = SP beží lokálne, ale prihlasuje sa proti Keycloaku na **kisteste**. Keycloak
+sa lokálne nespúšťa (beží už na kisteste). Predpoklad: `kistest` sa z tvojho prehliadača rozloží
+na IP kistest servera (VPN + `hosts`/DNS). Realm na kisteste už obsahuje aj klienta
+`https://127.0.0.1.slovensko.sk.login`, takže lokálna SP funguje bez ďalšej registrácie.
+Podrobnosti v [plan.md](plan.md) (sekcia 4b).
+
 > Pri zmene Java kódu najprv `mvn clean install` a pred reštartom zmazať rozbalený
 > priečinok `bind-mounts/portal/usr/local/tomcat/webapps/ROOT`, aby Tomcat nasadil novú `ROOT.war`.
 

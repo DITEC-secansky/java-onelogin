@@ -12,7 +12,7 @@ public class Settings {
     public static Saml2Settings loadSettings() throws IOException {
         // Prostredie (localhost / server) sa vyberá výhradne cez docker compose súbor,
         // ktorý namountuje príslušný properties súbor na túto cestu.
-        // docker-compose.yml -> localhost; docker-compose-kistest.yml -> server (kistest).
+        // docker-compose.yml -> localhost; docker-compose.demo-kistest.yml -> server (kistest).
         Properties conf = new Properties();
         conf.load(new FileInputStream(System.getProperty("catalina.base") + "/conf/keycloak.webssodemo.saml.properties"));
         return new SettingsBuilder().fromProperties(conf).build();

@@ -1,0 +1,42 @@
+# Samostatny compose pre HYBRIDNY rezim.
+# SP (demo appka) bezi LOKALNE na tvojom stroji: https://127.0.0.1:3001
+# IdP Keycloak bezi na SERVERI kistest:            http://kistest:8081
+#
+# Spustenie (na lokalnom stroji):
+#   docker compose -f docker-compose.demo-kistest.hybrid.yml up -d
+#
+# Keycloak sa NESPUSTA lokalne - bezi uz na kisteste. Preto tu NIE je
+# ziadna keycloak sluzba (na rozdiel od docker-compose.keycloak.yml).
+#
+# Predpoklady:
+#   1) Na kisteste bezi Keycloak (docker compose -f docker-compose.keycloak.yml up -d)
+#      s realmom webssodemo, ktory obsahuje klienta "https://127.0.0.1.slovensko.sk.login".
+#   2) Z tvojho lokalneho prehliadaca sa hostname "kistest" da rozlozit na IP kistest
+#      servera (napr. cez VPN + polozku v hosts subore / DNS), aby redirect na
+#      http://kistest:8081/... fungoval.
+#
+# Rozdiel oproti docker-compose.yml (localhost) je len v tom, ze mountuje
+# keycloak.webssodemo.saml.kistest.hybrid.properties (SP=127.0.0.1, IdP=kistest)
+# na cestu .../conf/keycloak.webssodemo.saml.properties.
+name: webssodemo
+services:
+  portal:
+    image: tomcat:9.0
+    mem_limit: 500m
+    volumes:
+      - ./bind-mounts/portal/usr/local/tomcat/webapps:/usr/local/tomcat/webapps
+      - ./bind-mounts/portal/usr/local/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml
+      - ./bind-mounts/portal/usr/local/tomcat/conf/webssodemo.saml.properties:/usr/local/tomcat/conf/webssodemo.saml.properties
+      - ./bind-mounts/portal/usr/local/tomcat/conf/two_keys_setup.webssodemo.saml.properties:/usr/local/tomcat/conf/two_keys_setup.webssodemo.saml.properties
+      - ./bind-mounts/portal/usr/local/tomcat/conf/keycloak.webssodemo.saml.kistest.hybrid.properties:/usr/local/tomcat/conf/keycloak.webssodemo.saml.properties
+      - ./bind-mounts/portal/usr/local/tomcat/conf/localhost-rsa.jks:/usr/local/tomcat/conf/localhost-rsa.jks
+    ports:
+      - 3001:3001
+      - 5005:5005
+    # "kistest" nasmerujeme na IP kistest servera, aby ho vedel rozlozit
+    # aj kontajner (nie je nutne pre SAML tok cez prehliadac, ale nezaskodi).
+    # Ak Keycloak bezi lokalne cez docker, pouzi host-gateway; inak IP servera.
+    extra_hosts:
+      - "kistest:host-gateway"
+    environment:
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005

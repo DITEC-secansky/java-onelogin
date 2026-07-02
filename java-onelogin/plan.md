@@ -22,17 +22,19 @@ hodnoty `onelogin.saml2.idp.*` v properties súbore a zaregistrovanie SP v Keycl
   `conf/two_keys_setup.webssodemo.saml.properties` (mimo classpath, načítava sa pri každom requeste).
 - SP entityID: per-režim – `https://127.0.0.1.slovensko.sk.login` (localhost) /
   `https://kistest.slovensko.sk.login` (server)
-- **Prepínanie prostredia (`127.0.0.1` ↔ server)**: zatiaľ **dva režimy** – všetko lokálne
-  alebo všetko na serveri.
+- **Prepínanie prostredia (`127.0.0.1` ↔ server)**: **tri režimy** – všetko lokálne,
+  všetko na serveri, alebo **hybrid** (SP lokálne + IdP na serveri).
   **Bez env premenných a bez tokenov** – prepína sa výberom **compose súboru**,
   ktorý namountuje príslušný properties súbor:
   localhost = `docker compose up -d` (base mountuje `keycloak.webssodemo.saml.properties`),
-  server = `docker compose -f docker-compose-kistest.yml up -d` (mountuje
-  `keycloak.webssodemo.saml.kistest.properties`). Keycloak: zdieľaný `docker-compose.keycloak.yml`
-  (identický pre oba režimy). `Settings.java` len
+  server = `docker compose -f docker-compose.demo-kistest.yml up -d` (mountuje
+  `keycloak.webssodemo.saml.kistest.properties`),
+  hybrid = `docker compose -f docker-compose.demo-kistest.hybrid.yml up -d` (mountuje
+  `keycloak.webssodemo.saml.kistest.hybrid.properties`). Keycloak: zdieľaný `docker-compose.keycloak.yml`
+  (identický pre všetky režimy). `Settings.java` len
   načíta ten súbor, ktorý je namountovaný. `entityid` je per-súbor a vyberá jedného z **dvoch
   Keycloak klientov** (`...kistest...` / `...127.0.0.1...`) so správnou statickou SLO URL →
-  funkčný **login aj logout**. Hybrid (rôzne hosty SP/IdP) je zatiaľ mimo rozsah.
+  funkčný **login aj logout**.
 - **Tomcat počúva iba cez HTTPS na porte 3001** (`server.xml`: `scheme="https" secure="true"`,
   keystore `localhost-rsa.jks`). SP URL sú `https://127.0.0.1:3001/...` (localhost) alebo
   `https://kistest:3001/...` (server).
@@ -298,6 +300,46 @@ má v `pom.xml` povýšený **`xmlsec 4.0.2`** (a vylúčený starý), takže by
 Ak by dešifrovanie zlyhávalo, v Keycloak klientovi skúste prepnúť **Encryption Algorithm**
 (napr. na RSA-OAEP) a **Encryption Key Algorithm**, prípadne dočasne šifrovanie vypnúť
 a overiť zvyšok toku. Sleduje sa to v logoch SP (`SamlServlet` loguje aj raw/decoded SAMLResponse).
+
+---
+
+## 4b. Hybridný režim (SP lokálne + IdP na serveri kistest)
+
+Okrem „všetko lokálne" a „všetko na serveri" je podporený aj **hybridný** režim: demo
+aplikácia (**SP**) beží **lokálne** na tvojom stroji (`https://127.0.0.1:3001`), zatiaľ čo
+**Keycloak (IdP)** beží na **serveri kistest** (`http://kistest:8081`). Hodí sa na vývoj/ladenie
+SP kódu proti spoločnému, už nasadenému Keycloaku.
+
+**Ako to funguje bez nových klientov:** realm na kisteste už obsahuje **dvoch** SAML klientov –
+`https://kistest.slovensko.sk.login` **aj** `https://127.0.0.1.slovensko.sk.login` (s ACS/SLO na
+`https://127.0.0.1:3001/...`). Hybrid teda len skombinuje **lokálnu SP sekciu** (127.0.0.1,
+použije klienta `...127.0.0.1...`) s **IdP sekciou mieriacou na kistest**.
+
+**Súbory:**
+- `bind-mounts/.../conf/keycloak.webssodemo.saml.kistest.hybrid.properties` – `sp.*` = 127.0.0.1,
+  `idp.*` = `http://kistest:8081/realms/webssodemo`.
+- `docker-compose.demo-kistest.hybrid.yml` – mountuje hybrid properties na štandardnú cestu
+  `.../conf/keycloak.webssodemo.saml.properties`; **neobsahuje** Keycloak službu (ten beží na kisteste).
+
+**Spustenie (na lokálnom stroji):**
+```
+docker compose -f docker-compose.demo-kistest.hybrid.yml up -d
+```
+
+**Predpoklady:**
+1. Na kisteste beží Keycloak (`docker compose -f docker-compose.keycloak.yml up -d`) s realmom
+   `webssodemo` (obsahuje klienta `https://127.0.0.1.slovensko.sk.login`).
+2. Z tvojho **prehliadača** sa `kistest` rozloží na IP kistest servera (VPN + `hosts` súbor /
+   DNS), aby redirect na `http://kistest:8081/...` fungoval.
+3. IdP `entityid` musí sedieť s tým, čo Keycloak reálne vydáva – teda pri prístupe cez
+   `http://kistest:8081` je to `http://kistest:8081/realms/webssodemo` (už nastavené v hybrid
+   properties). Keďže IdP RS256 kľúč je fixný v `realm-export.json`, `idp.x509cert` je rovnaký
+   ako v ostatných profiloch.
+
+> **Pozn. HTTP vs HTTPS cookies:** SP je na HTTPS (`127.0.0.1:3001`), Keycloak na HTTP
+> (`kistest:8081`). Cross-site POST z Keycloaku na ACS môže naraziť na `SameSite`/`Secure`
+> cookie správanie (rovnaké riziko ako pri localhost režime) – ak by session „padala", zvážiť
+> HTTPS na Keycloaku.
 
 ---
 
