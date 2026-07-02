@@ -55,26 +55,58 @@ Pre Identity providera okopírujete hodnoty, čo ste dostali od NASESu v metadá
 Okrem produkčného IdP (UPVS FIX) je možné sa prihlasovať aj voči lokálnemu **Keycloaku**,
 ktorý vystupuje ako SAML 2.0 Identity Provider. Postup a princíp sú podrobne popísané v [plan.md](plan.md).
 
-Aplikácia a Keycloak sú **dva samostatné kontajnery** spúšťané osobitne:
+Aplikácia a Keycloak sú **dva samostatné kontajnery** spúšťané osobitne. Poradie: najprv
+**Tomcat (SP)**, potom **Keycloak (IdP)**. Všetky príkazy používajú prepínač `-f` a pred každým
+je komentár, **na ktorom počítači sa spúšťa**.
 
-```
-# 1) Tomcat s demo aplikáciou (SP)
-docker compose up -d
+### Deployment – prehľad režimov
 
-# 2) Keycloak (SAML IdP, realm webssodemo) – samostatný image s auto-importom realmu
+| Režim | App URL (SP) | Keycloak URL (IdP) |
+|---|---|---|
+| **local** | `https://127.0.0.1:3001/` | `http://127.0.0.1:8081/` |
+| **kistest** | `https://kistest:3001/` | `http://kistest:8081/` |
+| **hybrid** | `https://127.0.0.1:3001/` (lokálne) | `http://kistest:8081/` (na serveri) |
+
+#### 1) LOCAL – všetko na tvojom počítači
+
+```bash
+# === TVOJ POCITAC (localhost) ===
+# 1) SP – demo appka (Tomcat)
+docker compose -f docker-compose.demo-local.yml up -d
+
+# === TVOJ POCITAC (localhost) ===
+# 2) IdP – Keycloak
 docker compose -f docker-compose.keycloak.yml up -d
 ```
 
-### Režimy spustenia (localhost / server / hybrid)
+#### 2) KISTEST – všetko na serveri kistest
 
-Prostredie sa neprepína env premennými, ale **výberom compose súboru**, ktorý namountuje
-príslušný SP properties profil na `.../conf/keycloak.webssodemo.saml.properties`:
+```bash
+# === SERVER kistest ===
+# 1) SP – demo appka (Tomcat)
+docker compose -f docker-compose.demo-kistest.yml up -d
 
-| Režim | SP (appka) | IdP (Keycloak) | Spustenie SP |
-|---|---|---|---|
-| **localhost** | `https://127.0.0.1:3001` | `http://127.0.0.1:8081` | `docker compose up -d` |
-| **server (kistest)** | `https://kistest:3001` | `http://kistest:8081` | `docker compose -f docker-compose.demo-kistest.yml up -d` |
-| **hybrid** | `https://127.0.0.1:3001` (lokálne) | `http://kistest:8081` (na serveri) | `docker compose -f docker-compose.demo-kistest.hybrid.yml up -d` |
+# === SERVER kistest ===
+# 2) IdP – Keycloak
+docker compose -f docker-compose.keycloak.yml up -d
+```
+
+#### 3) HYBRID – appka lokálne, Keycloak na kisteste
+
+```bash
+# === TVOJ POCITAC (localhost) ===
+# 1) SP – demo appka (Tomcat, prihlasuje sa proti Keycloaku na kisteste)
+docker compose -f docker-compose.demo-kistest.hybrid.yml up -d
+
+# === SERVER kistest ===
+# 2) IdP – Keycloak (beží na serveri)
+docker compose -f docker-compose.keycloak.yml up -d
+```
+
+> Pozn.: Prostredie sa neprepína env premennými, ale **výberom compose súboru**, ktorý namountuje
+> príslušný SP properties profil na `.../conf/keycloak.webssodemo.saml.properties`. `docker-compose.yml`
+> je len alias (`include`) na `docker-compose.demo-local.yml`, takže `docker compose up -d` bez `-f`
+> robí to isté ako **local**.
 
 **Hybridný režim** = SP beží lokálne, ale prihlasuje sa proti Keycloaku na **kisteste**. Keycloak
 sa lokálne nespúšťa (beží už na kisteste). Predpoklad: `kistest` sa z tvojho prehliadača rozloží
