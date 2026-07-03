@@ -24,6 +24,46 @@
       }
     ]
   },
+  "clientScopes": [
+    {
+      "name": "upvs-attrs",
+      "description": "UPVS-like SAML attributes for demo (Subject.*, Actor.*, Roles, ...)",
+      "protocol": "saml",
+      "attributes": {
+        "display.on.consent.screen": "false",
+        "include.in.token.scope": "true"
+      },
+      "protocolMappers": [
+        { "name": "SubjectIDSector", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "SubjectIDSector", "attribute.name": "SubjectIDSector", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.AuthResourceType", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.AuthResourceType", "attribute.name": "Actor.AuthResourceType", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.FormattedName", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.FormattedName", "attribute.name": "Subject.FormattedName", "attribute.nameformat": "Basic" } },
+        { "name": "QAALevel", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "QAALevel", "attribute.name": "QAALevel", "attribute.nameformat": "Basic" } },
+        { "name": "SubjectID", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "SubjectID", "attribute.name": "SubjectID", "attribute.nameformat": "Basic" } },
+        { "name": "AssertionType", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "AssertionType", "attribute.name": "AssertionType", "attribute.nameformat": "Basic" } },
+        { "name": "DelegationMediatorID", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "DelegationMediatorID", "attribute.name": "DelegationMediatorID", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.IdentityType", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.IdentityType", "attribute.name": "Subject.IdentityType", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.PCO", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.PCO", "attribute.name": "Actor.PCO", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.FormattedName", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.FormattedName", "attribute.name": "Actor.FormattedName", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.Username", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.Username", "attribute.name": "Actor.Username", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.Email", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.Email", "attribute.name": "Actor.Email", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.LastName", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.LastName", "attribute.name": "Actor.LastName", "attribute.nameformat": "Basic" } },
+        { "name": "DelegationType", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "DelegationType", "attribute.name": "DelegationType", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.IdentityType", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.IdentityType", "attribute.name": "Actor.IdentityType", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.FirstName", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.FirstName", "attribute.name": "Actor.FirstName", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.eDeskStatus", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.eDeskStatus", "attribute.name": "Subject.eDeskStatus", "attribute.nameformat": "Basic" } },
+        { "name": "Actor.UPVSIdentityID", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.UPVSIdentityID", "attribute.name": "Actor.UPVSIdentityID", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.ICO", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.ICO", "attribute.name": "Subject.ICO", "attribute.nameformat": "Basic" } },
+        { "name": "ActorID", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "ActorID", "attribute.name": "ActorID", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.UPVSIdentityID", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.UPVSIdentityID", "attribute.name": "Subject.UPVSIdentityID", "attribute.nameformat": "Basic" } },
+        { "name": "Roles", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Roles", "attribute.name": "Roles", "attribute.nameformat": "Basic", "aggregate.attrs": "true" } },
+        { "name": "Actor.REIdentityId", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Actor.REIdentityId", "attribute.name": "Actor.REIdentityId", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.REIdentityId", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.REIdentityId", "attribute.name": "Subject.REIdentityId", "attribute.nameformat": "Basic" } },
+        { "name": "ActorIDSector", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "ActorIDSector", "attribute.name": "ActorIDSector", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.eDeskNumber", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.eDeskNumber", "attribute.name": "Subject.eDeskNumber", "attribute.nameformat": "Basic" } },
+        { "name": "Subject.Email", "protocol": "saml", "protocolMapper": "saml-user-attribute-mapper", "consentRequired": false, "config": { "user.attribute": "Subject.Email", "attribute.name": "Subject.Email", "attribute.nameformat": "Basic" } }
+      ]
+    }
+  ],
   "clients": [
     {
       "clientId": "https://kistest.slovensko.sk.login",
@@ -36,6 +76,10 @@
       "adminUrl": "https://kistest:3001/auth/saml/callback",
       "redirectUris": [
         "https://kistest:3001/*"
+      ],
+      "defaultClientScopes": [
+        "role_list",
+        "upvs-attrs"
       ],
       "attributes": {
         "saml.assertion.signature": "true",
@@ -117,6 +161,10 @@
       "redirectUris": [
         "https://127.0.0.1:3001/*"
       ],
+      "defaultClientScopes": [
+        "role_list",
+        "upvs-attrs"
+      ],
       "attributes": {
         "saml.assertion.signature": "true",
         "saml.server.signature": "true",
@@ -194,6 +242,45 @@
       "email": "testuser@webssodemo.local",
       "firstName": "Test",
       "lastName": "User",
+      "attributes": {
+        "SubjectIDSector": ["SECTOR_UPVS"],
+        "Actor.AuthResourceType": ["1"],
+        "Subject.FormattedName": ["CÚ Trenčín - pobočka"],
+        "QAALevel": ["1"],
+        "SubjectID": ["ico://sk/83369414"],
+        "AssertionType": ["WEBSSO"],
+        "DelegationMediatorID": ["46636"],
+        "Subject.IdentityType": ["6"],
+        "Actor.PCO": ["8311577142"],
+        "Actor.FormattedName": ["Janko Tisíci"],
+        "Actor.Username": ["E0005182450"],
+        "Actor.Email": ["test@slovensko.sk"],
+        "Actor.LastName": ["Tisíci"],
+        "DelegationType": ["0"],
+        "Actor.IdentityType": ["1"],
+        "Actor.FirstName": ["Janko"],
+        "Subject.eDeskStatus": ["DELIVERABLE"],
+        "Actor.UPVSIdentityID": ["D669A4AB-0617-4024-B180-6CF6EBCB445F"],
+        "Subject.ICO": ["83369414"],
+        "ActorID": ["rc://sk/8311577142_tisici_janko"],
+        "Subject.UPVSIdentityID": ["0CCAE6F0-D277-4BF9-8CAE-9F2E086BB6BD"],
+        "Roles": [
+          "R_PK_INFOCONTENT_GESTOR", "R_EKOLKY_SUPERVIZOR",
+          "__TESTONLY__R_ED_POSTAL_DELIVERY_DEV_SANDBOX", "R_DELEGATION_GESTOR",
+          "R_ENOTIFY_EMERGENCY_ALLOWED", "R_CUET_PUBLISHER", "R_EKOLKY_POKLADNIK",
+          "R_CNM_TEMPLATE_MANAGER", "R_IAM_OVM", "R_CAMP_SUBJECT_REGISTRATION",
+          "R_SLUZBA_CEP", "R_CNM_NOTIFICATION_MANAGER", "R_ED_POSTAL_DELIVERY_ENABLED",
+          "R_ENOTIFY_ALLOWED", "R_MDURZ_READER", "R_EFORM_GESTOR", "R_IAM_GESTOR_OJ",
+          "R_EKOLKY_REFERENT", "R_EFORM_NOTIFY_GESTOR", "R_MDURZ_WRITER",
+          "R_CRAC_AUTOMATIC_PROCESSING", "GR_IAM_INSTITUTION", "R_CEP_SIGN_SYNC",
+          "R_MUK_OPENAPI_POSKYTOVATEL", "R_EDESK_VPI"
+        ],
+        "Actor.REIdentityId": ["5184294"],
+        "Subject.REIdentityId": ["5190539"],
+        "ActorIDSector": ["SECTOR_UPVS"],
+        "Subject.eDeskNumber": ["E0005188695"],
+        "Subject.Email": ["test@slovensko.sk"]
+      },
       "credentials": [
         {
           "type": "password",
