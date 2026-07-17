@@ -11,11 +11,77 @@ Ak ale naozaj potrebujete nastaviť rozdielne certifikáty a kľúče, použite 
 Fork si potrebujete lokálne zbuildovať, nainštalovať a v `pom.xml` použiť túto verziu `2.9.1-SK`.
 Konfigurácia pre tento scenár je uložená v: [two_keys_setup.webssodemo.saml.properties](bind-mounts/portal/usr/local/tomcat/conf/two_keys_setup.webssodemo.saml.properties)
 
+## Závislosť na java-saml (fork `2.9.1-SK`)
+
+Tento projekt **priamo závisí na SAML toolkite**, ktorý nie je v žiadnom verejnom Maven repozitári –
+je to **lokálne buildovaný fork**. V [`pom.xml`](pom.xml) je to:
+
+```xml
+<dependency>
+    <groupId>com.onelogin</groupId>
+    <artifactId>java-saml</artifactId>
+    <version>2.9.1-SK</version>
+    <!-- xmlsec a logback-classic sú vylúčené a xmlsec sa pridáva vo verzii 4.0.2 -->
+</dependency>
+```
+
+Artefakt `com.onelogin:java-saml:2.9.1-SK` (modul **toolkit** forku) musí byť **najprv nainštalovaný
+v lokálnom `~/.m2`**, inak build tohto projektu zlyhá na nevyriešenej závislosti.
+
+### Aký je to presne fork
+
+- **Pôvod:** [OneLogin / SAML-Toolkits `java-saml`](https://github.com/SAML-Toolkits/java-saml).
+- **Fork:** [`archimetes/java-saml`](https://github.com/archimetes/java-saml), vlastná verzia **`2.9.1-SK`**
+  (prípona `-SK`). Hlavný dôvod forku: umožňuje nastaviť **rozdielne certifikáty/kľúče pre podpisovanie
+  a šifrovanie** (originál podporuje len jeden spoločný pár) – viď sekciu vyššie.
+- **Štruktúra:** multi-modulový Maven projekt (`pom` root) s modulmi `core` → `toolkit` → `samples`.
+  Nás zaujíma modul **`toolkit`** (`artifactId: java-saml`), ktorý ťahá `core`.
+- **Požiadavky:** **JDK 8** (kompiluje na `source/target 1.8`), **Maven ≥ 3.2.5** (vynútené cez
+  `maven-enforcer-plugin`). Nemá `mvnw` wrapper – treba systémový `mvn`.
+
+### Ako ho stiahnuť
+
+```bash
+git clone https://github.com/archimetes/java-saml.git
+cd java-saml
+```
+
+### Ako ho zbuildovať a nainštalovať
+
+Root `pom.xml` forku má nakonfigurovaný **OWASP `dependency-check`** ako bezpečnostnú bránu
+(`failBuildOnCVSS=7`). Ten pri prvom behu sťahuje **celú NVD databázu** (~366 tis. CVE záznamov,
+**~1,5–2,5 GB** do `~/.m2/.../dependency-check-data`) a je veľmi pomalý bez NVD API kľúča.
+
+**Odporúčaný build** (rýchly, bez testov a bez NVD kontroly – presne to, čo potrebujeme na inštaláciu
+artefaktu do `~/.m2`):
+
+```bash
+mvn clean install -DskipTests -Ddependency-check.skip=true
+```
+
+### Čas buildu
+
+| Príkaz | Čo robí | Reálny čas |
+|---|---|---|
+| `mvn clean install -DskipTests -Ddependency-check.skip=true` | len compile + package + install | **~18 s** (namerané 18,3 s), BUILD SUCCESS |
+| `mvn clean install` (plný, prvý beh s NVD) | testy (373 OK) + OWASP dependency-check so stiahnutím celej NVD | **~1 h 47 min** |
+
+> ⚠️ **Pozor:** plný `mvn clean install` na tomto forku **zlyhá** aj po dobehnutí – nie kvôli testom
+> (tie prejdú, 373 OK), ale preto, že OWASP nájde tranzitívne závislosti (Azure SDK, Netty, Jackson)
+> so **CVSS ≥ 7** a bránou `failBuildOnCVSS=7` build zhodí. Preto na inštaláciu artefaktu **vždy použi
+> variant s `-Ddependency-check.skip=true`** (viď odporúčaný build vyššie).
+>
+> Ďalší build **v ten istý deň je rýchly** – NVD sa neťahá celá znova, len prípadná malá inkrementálna
+> aktualizácia (cache v `~/.m2` sa `mvn clean`-om nemaže). Úplne bez sieťového NVD kroku:
+> `mvn clean install -DautoUpdate=false`.
+
+Po úspešnom `install` je `java-saml:2.9.1-SK` v `~/.m2` a build tohto projektu (nižšie) ho už nájde.
+
 ## Inštalácia
 
-Zbuildujte si tento projekt:
+Zbuildujte si tento projekt (predpoklad: fork `java-saml:2.9.1-SK` je už nainštalovaný v `~/.m2` – viď sekciu vyššie):
 ```
-mnv clean install
+mvn clean install
 ```
 Výsledný artefakt ROOT.war sa nakopíruje do bind-mounts/portal/usr/local/tomcat/webapps kde už je dostupný pre Tomcat. 
 Stačí už len spustiť kontajner s Tomcatom:
